@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Jeranium Invoice</title>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial;}
+body{
+background:#f2f5f9;
+padding:30px;
+}
+
+.container{
+max-width:1000px;
+margin:auto;
+display:grid;
+grid-template-columns:350px 1fr;
+gap:20px;
+}
+
+.card{
+background:#fff;
+padding:20px;
+border-radius:10px;
+box-shadow:0 5px 15px rgba(0,0,0,.1);
+}
+
+input{
+width:100%;
+padding:10px;
+margin-top:10px;
+border:1px solid #ccc;
+border-radius:5px;
+}
+
+button{
+margin-top:10px;
+padding:10px;
+border:none;
+background:#0d6efd;
+color:#fff;
+cursor:pointer;
+border-radius:5px;
+width:100%;
+}
+
+.invoice{
+background:#fff;
+padding:30px;
+border-radius:10px;
+box-shadow:0 5px 15px rgba(0,0,0,.1);
+}
+
+.header{
+display:flex;
+justify-content:space-between;
+border-bottom:2px solid #198754;
+padding-bottom:10px;
+margin-bottom:20px;
+}
+
+.header h1{
+color:#198754;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+margin-top:20px;
+}
+
+table th,table td{
+border:1px solid #ddd;
+padding:8px;
+text-align:center;
+}
+
+th{
+background:#198754;
+color:white;
+}
+
+.total{
+margin-top:20px;
+text-align:right;
+font-size:20px;
+font-weight:bold;
+}
+</style>
+
+</head>
+<body>
+
+<div class="container">
+
+<div class="card">
+
+<h2>Customer</h2>
+
+<input id="name" placeholder="Customer Name">
+
+<input id="mobile" placeholder="Mobile Number">
+
+<input id="address" placeholder="Address">
+
+<hr style="margin:20px 0">
+
+<h2>Item</h2>
+
+<input id="item" placeholder="Item Name">
+
+<input id="price" type="number" placeholder="Price">
+
+<input id="qty" type="number" placeholder="Quantity">
+
+<button onclick="addItem()">Add Item</button>
+
+</div>
+
+<div class="invoice" id="invoice">
+
+<div class="header">
+
+<div>
+<h1>🌿 জেরানিয়াম</h1>
+<p>Invoice</p>
+</div>
+
+<div>
+<b>Invoice:</b> INV-001<br>
+<b>Date:</b> <span id="date"></span>
+</div>
+
+</div>
+
+<h3>Customer Information</h3>
+
+<p>
+
+<b>Name:</b>
+<span id="cname"></span>
+
+<br>
+
+<b>Mobile:</b>
+<span id="cmobile"></span>
+
+<br>
+
+<b>Address:</b>
+<span id="caddress"></span>
+
+</p>
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>Item</th>
+
+<th>Price</th>
+
+<th>Qty</th>
+
+<th>Total</th>
+
+</tr>
+
+</thead>
+
+<tbody id="tbody">
+
+</tbody>
+
+</table>
+
+<div class="total">
+
+Grand Total :
+৳ <span id="grand">0</span>
+
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+date.innerHTML=new Date().toLocaleDateString();
+
+let grand=0;
+
+function addItem(){
+
+cname.innerHTML=name.value;
+
+cmobile.innerHTML=mobile.value;
+
+caddress.innerHTML=address.value;
+
+let itemName=item.value;
+
+let itemPrice=Number(price.value);
+
+let quantity=Number(qty.value);
+
+let total=itemPrice*quantity;
+
+grand+=total;
+
+grand.innerHTML=grand;
+
+document.getElementById("grand").innerHTML=grand;
+
+tbody.innerHTML+=`
+
+<tr>
+
+<td>${itemName}</td>
+
+<td>${itemPrice}</td>
+
+<td>${quantity}</td>
+
+<td>${total}</td>
+
+</tr>
+
+`;
+
+item.value="";
+price.value="";
+qty.value="";
+
+}
+
+</script>
+<!-- PDF & Image Library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<div style="margin-top:20px;text-align:right">
+
+<button onclick="printInvoice()">
+🖨 Print Invoice
+</button>
+
+<button onclick="downloadPDF()">
+📄 Download PDF
+</button>
+
+<button onclick="downloadImage()">
+🖼 Download Image
+</button>
+
+</div>
+
+<script>
+
+function printInvoice(){
+
+let body=document.body.innerHTML;
+
+let invoice=document.getElementById("invoice").innerHTML;
+
+document.body.innerHTML=invoice;
+
+window.print();
+
+document.body.innerHTML=body;
+
+location.reload();
+
+}
+
+async function downloadPDF(){
+
+const {jsPDF}=window.jspdf;
+
+const pdf=new jsPDF("p","mm","a4");
+
+const canvas=await html2canvas(document.getElementById("invoice"));
+
+const img=canvas.toDataURL("image/png");
+
+const w=190;
+
+const h=(canvas.height*w)/canvas.width;
+
+pdf.addImage(img,"PNG",10,10,w,h);
+
+pdf.save("Invoice.pdf");
+
+}
+
+function downloadImage(){
+
+html2canvas(document.getElementById("invoice")).then(canvas=>{
+
+let a=document.createElement("a");
+
+a.download="Invoice.png";
+
+a.href=canvas.toDataURL();
+
+a.click();
+
+});
+
+}
+
+</script>
+</body>
+</html>
