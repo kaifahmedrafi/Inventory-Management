@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -99,7 +99,7 @@ font-weight:bold;
 
 <h2>Customer</h2>
 
-<input id="name" placeholder="Customer Name">
+<input id="customerName" placeholder="Customer Name">
 
 <input id="mobile" placeholder="Mobile Number">
 
@@ -197,11 +197,11 @@ let grand=0;
 
 function addItem(){
 
-cname.innerHTML=name.value;
+document.getElementById("cname").innerText=document.getElementById("customerName").value;
 
-cmobile.innerHTML=mobile.value;
+document.getElementById("cmobile").innerText=document.getElementById("mobile").value;
 
-caddress.innerHTML=address.value;
+document.getElementById("caddress").innerText=document.getElementById("address").value;
 
 let itemName=item.value;
 
@@ -213,7 +213,6 @@ let total=itemPrice*quantity;
 
 grand+=total;
 
-grand.innerHTML=grand;
 
 document.getElementById("grand").innerHTML=grand;
 
